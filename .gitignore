@@ -109,3 +109,4 @@ InitTestScene*.unity*
 #Manually added
 ProjectSettings/
 Assets/Settings/UniversalRenderPipelineGlobalSettings.asset
+ProjectSettings/ProjectAuditorSettings.asset

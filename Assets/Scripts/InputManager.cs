@@ -59,11 +59,13 @@ public class InputManager : MonoBehaviour
 
     void Update()
     {
+        bool accelerating = false;
         if(accelerateAction.IsPressed())
         {
+            accelerating = true;
             carController.Accelerate();
         }
-        carController.Steer(moveAction.ReadValue<float>());
+        carController.Steer(moveAction.ReadValue<float>(), accelerating);
 
 
         float rotation = RewindAngle();

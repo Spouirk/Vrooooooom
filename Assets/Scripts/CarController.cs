@@ -15,6 +15,7 @@ public class CarController : MonoBehaviour
     [SerializeField] private Rigidbody2D rigidbody;
     [SerializeField] private Slider energySlider;
     [SerializeField] private float maxAngularVelocity;
+    [SerializeField] private float slowdownOnReload;
     private float currentEnergy;
     private float newMovementRotation = 0;
 
@@ -78,5 +79,7 @@ public class CarController : MonoBehaviour
     public void Refuel(float rotation) {
         currentEnergy = MathF.Min(currentEnergy + energyGainPerRotation * rotation / 360, maxEnergy);
         energySlider.value = currentEnergy;
+        
+        rigidbody.AddForce(accelerationFactor / 3 * -transform.up);
     }
 }

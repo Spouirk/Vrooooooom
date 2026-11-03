@@ -59,15 +59,6 @@ public class InputManager : MonoBehaviour
 
     void Update()
     {
-        bool accelerating = false;
-        if(accelerateAction.IsPressed())
-        {
-            accelerating = true;
-            carController.Accelerate();
-        }
-        carController.Steer(moveAction.ReadValue<float>(), accelerating);
-
-
         float rotation = RewindAngle();
         if (rewindDetectionTimer > 0)
         {
@@ -76,5 +67,14 @@ public class InputManager : MonoBehaviour
         {
             carController.Deplete();
         }
+
+
+        bool accelerating = false;
+        if(accelerateAction.IsPressed() && rewindDetectionTimer<= 0)
+        {
+            accelerating = true;
+            carController.Accelerate();
+        }
+        carController.Steer(moveAction.ReadValue<float>(), accelerating);
     }
 }

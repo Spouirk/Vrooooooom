@@ -16,6 +16,7 @@ public class CarController : MonoBehaviour
     [SerializeField] private Slider energySlider;
     [SerializeField] private float maxAngularVelocity;
     private float currentEnergy;
+    private float newMovementRotation = 0;
 
     void Start()
     {
@@ -34,7 +35,7 @@ public class CarController : MonoBehaviour
     public void Steer(float input, bool accelerating)
     {
         // Limit max speed correlated to energy bar
-        /*
+        
         float variableMaxSpeed = Mathf.Lerp(maxSpeed, 0, (1 - (currentEnergy/maxEnergy)));
         if (rigidbody.linearVelocity.magnitude > variableMaxSpeed)
         {
@@ -57,26 +58,15 @@ public class CarController : MonoBehaviour
             rigidbody.angularVelocity = -maxAngularVelocity;
         }
 
-        if (math.abs(rigidbody.angularVelocity) < 25)
+        
+        if (math.abs(rigidbody.angularVelocity) < maxAngularVelocity)
         {
-            rigidbody.linearVelocity = rigidbody.linearVelocity.magnitude * new Vector2(-math.sin(Mathf.Deg2Rad*rigidbody.rotation), math.cos(Mathf.Deg2Rad*rigidbody.rotation));
-        }*/
-        if (Mathf.Abs(input) > 0)
-        {   
-            float speedBaseSteerLimit = rigidbody.linearVelocity.y / 0.5f;
-            speedBaseSteerLimit = Mathf.Clamp01(speedBaseSteerLimit);
-
-            rigidbody.AddTorque(turnFactor * input * speedBaseSteerLimit);
-
-            float normalizedX = rigidbody.linearVelocity.x / maxAngularVelocity;
-            normalizedX = Mathf.Clamp(normalizedX, -1.0f, 1.0f);
-
-            rigidbody.linearVelocity = new Vector3(normalizedX * maxAngularVelocity, 0, rigidbody.linearVelocity.y);
-        }
-        else
+            newMovementRotation = Mathf.Deg2Rad*rigidbody.rotation;
+        } else
         {
-            rigidbody.linearVelocity = Vector3.Lerp(rigidbody.linearVelocity, new Vector3(0, 0, rigidbody.linearVelocity.y), Time.fixedDeltaTime * 3);
+            newMovementRotation = Mathf.Deg2Rad*(rigidbody.rotation - rigidbody.angularVelocity / 4);
         }
+        rigidbody.linearVelocity = rigidbody.linearVelocity.magnitude * new Vector2(-math.sin(newMovementRotation), math.cos(newMovementRotation));
     }
 
     public void Deplete()

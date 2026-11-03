@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 public class InputManager : MonoBehaviour
 {
     [SerializeField] CarController carController;
+    [SerializeField] ScreenShake shake;
     private InputAction moveAction;
     private InputAction accelerateAction;
 
@@ -63,6 +64,7 @@ public class InputManager : MonoBehaviour
         if (rewindDetectionTimer > 0)
         {
             carController.Refuel(rotation);
+            shake.shake();
         } else
         {
             carController.Deplete();

@@ -2,6 +2,7 @@ using System;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 public class CarController : MonoBehaviour
@@ -59,15 +60,17 @@ public class CarController : MonoBehaviour
             rigidbody.angularVelocity = -maxAngularVelocity;
         }
 
-        
-        if (math.abs(rigidbody.angularVelocity) < maxAngularVelocity)
+        if (Vector2.Dot(rigidbody.linearVelocity, transform.up) > 0)
         {
-            newMovementRotation = Mathf.Deg2Rad*rigidbody.rotation;
-        } else
-        {
-            newMovementRotation = Mathf.Deg2Rad*(rigidbody.rotation - rigidbody.angularVelocity / 4);
+            if (math.abs(rigidbody.angularVelocity) < maxAngularVelocity)
+            {
+                newMovementRotation = Mathf.Deg2Rad*rigidbody.rotation;
+            } else
+            {
+                newMovementRotation = Mathf.Deg2Rad*(rigidbody.rotation - rigidbody.angularVelocity / 4);
+            }
+            rigidbody.linearVelocity = rigidbody.linearVelocity.magnitude * new Vector2(-math.sin(newMovementRotation), math.cos(newMovementRotation));
         }
-        rigidbody.linearVelocity = rigidbody.linearVelocity.magnitude * new Vector2(-math.sin(newMovementRotation), math.cos(newMovementRotation));
     }
 
     public void Deplete()

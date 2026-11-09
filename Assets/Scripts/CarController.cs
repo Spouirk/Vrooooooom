@@ -23,6 +23,7 @@ public class CarController : MonoBehaviour
     private float currentEnergy;
     private float newMovementRotation = 0;
     private float rotationAngle = 0;
+    private int isInGrass;
 
     void Start()
     {
@@ -34,7 +35,7 @@ public class CarController : MonoBehaviour
     {
         if (currentEnergy > 0f)
         {
-            rigidbody.AddForce(accelerationFactor * transform.up, ForceMode2D.Force);
+            rigidbody.AddForce(accelerationFactor * transform.up * (2-isInGrass)/2f, ForceMode2D.Force);
         }
     }
 
@@ -47,8 +48,8 @@ public class CarController : MonoBehaviour
         rigidbody.MoveRotation(rotationAngle);
         
         // Limit max speed correlated to energy bar
-        
-        float variableMaxSpeed = Mathf.Lerp(maxSpeed, 0, (1 - (currentEnergy/maxEnergy)));
+
+        float variableMaxSpeed = Mathf.Lerp(maxSpeed - 100*(1-isInGrass), 0, (1 - (currentEnergy/maxEnergy)));
         if (rigidbody.linearVelocity.magnitude > variableMaxSpeed)
         {
             rigidbody.linearVelocity = rigidbody.linearVelocity.normalized * variableMaxSpeed;
@@ -110,5 +111,23 @@ public class CarController : MonoBehaviour
         energySlider.value = currentEnergy;
         
         rigidbody.AddForce(accelerationFactor / 3 * -transform.up, ForceMode2D.Force);
+    }
+
+    int grassLayer = 9;
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.layer == grassLayer)
+        {
+            isInGrass = 1;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.layer == grassLayer)
+        {
+            isInGrass = 0;
+        }
     }
 }

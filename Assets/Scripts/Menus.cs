@@ -3,6 +3,12 @@ using UnityEngine.SceneManagement;
 
 public class Menus : MonoBehaviour
 {
+    void OnEnable()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+    
     public void OnPlayButton()
     {
         SceneManager.LoadScene(1);

@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -19,6 +20,7 @@ public class CarController : MonoBehaviour
     [SerializeField] private Rigidbody2D rigidbody;
     [SerializeField] private Slider energySlider;
     [SerializeField] private Image energySliderColor;
+    [SerializeField] private TMP_Text energyText;
     [SerializeField] private float maxAngularVelocity;
     [SerializeField] private float slowdownOnReload;
     private float currentEnergy;
@@ -134,16 +136,20 @@ public class CarController : MonoBehaviour
 
     private void updateEnergyDisplay()
     {
+        Color displayColor;
         energySlider.value = currentEnergy;
         if (currentEnergy > maxEnergy/2f)
         {
-            energySliderColor.color = new Color(0, 255, 0);
+            displayColor = new Color(0, 255, 0);
         } else if (currentEnergy > maxEnergy/5f)
         {
-            energySliderColor.color = new Color(255, 130, 1);
+            // WHY THE FUCK DON'T YOU ACCEPT 3 FUCKING COLOR CHANNELS ??? TIM SWEENEY IS HELLA BETTER THAN YOU
+            displayColor = new Color(255, 130, 0);
         } else
         {
-            energySliderColor.color = new Color(255, 0, 0);
+            displayColor = new Color(255, 0, 0);
         }
+            energySliderColor.color = displayColor;
+            energyText.color = displayColor;
     }
 }

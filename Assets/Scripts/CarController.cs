@@ -140,7 +140,7 @@ public class CarController : MonoBehaviour
             energySliderColor.color = new Color(0, 255, 0);
         } else if (currentEnergy > maxEnergy/5f)
         {
-            energySliderColor.color = new Color(255, 130, 20);
+            energySliderColor.color = new Color(255, 130, 1);
         } else
         {
             energySliderColor.color = new Color(255, 0, 0);

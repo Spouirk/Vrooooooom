@@ -18,7 +18,6 @@ public class LapManager : MonoBehaviour
         {
             lapCounter++;
             checkPointPassed = false;
-            Debug.Log(lapCounter);
         }
         if(checkPoint.IsTouching(car) && !checkPointPassed)
         {

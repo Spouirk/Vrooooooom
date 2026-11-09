@@ -18,6 +18,7 @@ public class CarController : MonoBehaviour
     [SerializeField] private float energyGainPerRotation;
     [SerializeField] private Rigidbody2D rigidbody;
     [SerializeField] private Slider energySlider;
+    [SerializeField] private Image energySliderColor;
     [SerializeField] private float maxAngularVelocity;
     [SerializeField] private float slowdownOnReload;
     private float currentEnergy;
@@ -103,12 +104,12 @@ public class CarController : MonoBehaviour
     public void Deplete()
     {
         currentEnergy = Mathf.Max(currentEnergy - energyDepletionPerSecond * Time.deltaTime, 0);
-        energySlider.value = currentEnergy;
+        updateEnergyDisplay();
     }
 
     public void Refuel(float rotation) {
         currentEnergy = MathF.Min(currentEnergy + energyGainPerRotation * rotation / 360, maxEnergy);
-        energySlider.value = currentEnergy;
+        updateEnergyDisplay();
         
         rigidbody.AddForce(accelerationFactor / 3 * -transform.up, ForceMode2D.Force);
     }
@@ -128,6 +129,21 @@ public class CarController : MonoBehaviour
         if (collision.gameObject.layer == grassLayer)
         {
             isInGrass = 0;
+        }
+    }
+
+    private void updateEnergyDisplay()
+    {
+        energySlider.value = currentEnergy;
+        if (currentEnergy > maxEnergy/2f)
+        {
+            energySliderColor.color = new Color(0, 255, 0);
+        } else if (currentEnergy > maxEnergy/5f)
+        {
+            energySliderColor.color = new Color(255, 130, 20);
+        } else
+        {
+            energySliderColor.color = new Color(255, 0, 0);
         }
     }
 }

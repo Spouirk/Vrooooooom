@@ -23,6 +23,6 @@ public class Timer : MonoBehaviour
     {
         float minutes = Mathf.FloorToInt(elapsedTime / 60);
         float seconds = Mathf.FloorToInt(elapsedTime % 60);
-        display.text = minutes + " : " + seconds;
+        display.text = minutes + "min " + seconds + "sec";
     }
 }

@@ -1,15 +1,26 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LapManager : MonoBehaviour
 {
+    [SerializeField] private int totalLapCount;
     [SerializeField] private BoxCollider2D line;
     [SerializeField] private BoxCollider2D checkPoint;
     [SerializeField] private Collider2D car;
-    [SerializeField] TMP_Text text;
+    [SerializeField] private TMP_Text text;
+    [SerializeField] private GameObject inGameUi;
+    [SerializeField] private GameObject victoryUi;
+    [SerializeField] private TMP_Text finalTimeDisplay;
+    [SerializeField] private Timer timer;
     private bool checkPointPassed = false;
     private int lapCounter = 1;
+
+    void Start()
+    {
+        victoryUi.SetActive(false);
+    }
 
     // Update is called once per frame
     void Update()
@@ -18,11 +29,18 @@ public class LapManager : MonoBehaviour
         {
             lapCounter++;
             checkPointPassed = false;
+            if (lapCounter > totalLapCount)
+            {
+                Time.timeScale = 0;
+                timer.displayTime(finalTimeDisplay);
+                inGameUi.SetActive(false);
+                victoryUi.SetActive(true);
+            }
         }
         if(checkPoint.IsTouching(car) && !checkPointPassed)
         {
             checkPointPassed = true;
         }
-        text.text = "Tour : " + lapCounter;
+        text.text = "Tour : " + lapCounter + "/" + totalLapCount;
     }
 }

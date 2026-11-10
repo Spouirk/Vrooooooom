@@ -17,6 +17,7 @@ public class LapManager : MonoBehaviour
     [SerializeField] private TMP_Text finalTimeDisplay;
     [SerializeField] private Timer timer;
     [SerializeField] private GameObject firstButton;
+    [SerializeField] private AudioSource lapAudioSource;
     private bool checkPointPassed = false;
     private int lapCounter = 1;
 
@@ -40,7 +41,10 @@ public class LapManager : MonoBehaviour
                 victoryUi.SetActive(true);
                 EventSystem.current.SetSelectedGameObject(null);
                 EventSystem.current.SetSelectedGameObject(firstButton);
+                AudioManager.instance.StopMuteCity();
+                AudioManager.instance.PlayVictory();
             }
+            lapAudioSource.Play();
         }
         if(checkPoint.IsTouching(car) && !checkPointPassed)
         {

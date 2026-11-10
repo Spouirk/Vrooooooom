@@ -23,8 +23,14 @@ public class CarController : MonoBehaviour
     [SerializeField] private TMP_Text energyText;
     [SerializeField] private float maxAngularVelocity;
     [SerializeField] private float slowdownOnReload;
+    [SerializeField] private AudioSource engineAudioSource;
+    [SerializeField] private float engineVolume;
+    [SerializeField] private float enginePitch;
+    [SerializeField] private AudioSource screechAudioSource;
+    [SerializeField] private float screechVolume;
+    [SerializeField] private float screechPitch;
+    [SerializeField] private AudioSource refuelAudioSource;
     private float currentEnergy;
-    private float newMovementRotation = 0;
     private float rotationAngle = 0;
     private int isInGrass;
 
@@ -65,34 +71,6 @@ public class CarController : MonoBehaviour
             rigidbody.linearDamping = Mathf.Lerp(rigidbody.linearDamping, dragFactor, Time.deltaTime * dragFactor);
         }
         else rigidbody.linearDamping = 0;
-
-        // if (input == 0)
-        // {
-        //     rigidbody.angularVelocity = Mathf.Lerp(rigidbody.angularVelocity, 0, 0.05f);
-        //     return;
-        // }
-
-        // rigidbody.AddTorque(turnFactor * input);
-        // if (rigidbody.angularVelocity > maxAngularVelocity)
-        // {
-        //     rigidbody.angularVelocity = maxAngularVelocity;
-        // }
-        // if (rigidbody.angularVelocity < -maxAngularVelocity)
-        // {
-        //     rigidbody.angularVelocity = -maxAngularVelocity;
-        // }
-
-        // if (Vector2.Dot(rigidbody.linearVelocity, transform.up) > 0)
-        // {
-        //     if (math.abs(rigidbody.angularVelocity) < maxAngularVelocity)
-        //     {
-        //         newMovementRotation = Mathf.Deg2Rad*rigidbody.rotation;
-        //     } else
-        //     {
-        //         newMovementRotation = Mathf.Deg2Rad*(rigidbody.rotation - rigidbody.angularVelocity / 4);
-        //     }
-        //     rigidbody.linearVelocity = rigidbody.linearVelocity.magnitude * new Vector2(-math.sin(newMovementRotation), math.cos(newMovementRotation));
-        // }
     }
 
     public void KillOrthogonalVelocity()
@@ -106,12 +84,14 @@ public class CarController : MonoBehaviour
     public void Deplete()
     {
         currentEnergy = Mathf.Max(currentEnergy - energyDepletionPerSecond * Time.deltaTime, 0);
+        refuelAudioSource.volume = 0;
         updateEnergyDisplay();
     }
 
     public void Refuel(float rotation) {
         currentEnergy = MathF.Min(currentEnergy + energyGainPerRotation * rotation / 360, maxEnergy);
         updateEnergyDisplay();
+        refuelAudioSource.volume = 1;
         
         rigidbody.AddForce(accelerationFactor / 3 * -transform.up, ForceMode2D.Force);
     }
@@ -152,4 +132,31 @@ public class CarController : MonoBehaviour
             energySliderColor.color = displayColor;
             energyText.color = displayColor;
     }
+
+    public void UpdateSFX()
+    {
+        //Engine SFX
+        float velocityMagnitude = rigidbody.linearVelocity.magnitude;
+
+        float desiredEngineVolume = velocityMagnitude * engineVolume;
+
+        desiredEngineVolume = Mathf.Clamp01(desiredEngineVolume);
+
+        engineAudioSource.volume = Mathf.Lerp(engineAudioSource.volume, desiredEngineVolume, Time.deltaTime * 10);
+
+        enginePitch = velocityMagnitude * 0.2f;
+        enginePitch = Mathf.Clamp(enginePitch, 0.5f, 2f);
+
+        engineAudioSource.pitch = Mathf.Lerp(engineAudioSource.pitch, enginePitch, Time.deltaTime * 1.5f);
+
+        //Screech SFX
+        float lateralVelocity = Vector2.Dot(transform.right, rigidbody.linearVelocity);
+
+        if(Mathf.Abs(lateralVelocity) > 1.5f)
+        {
+            screechAudioSource.volume = Mathf.Abs(lateralVelocity) * screechVolume;
+            screechAudioSource.pitch = Mathf.Abs(lateralVelocity) * screechPitch;
+        }
+        else screechAudioSource.volume = Mathf.Lerp(screechAudioSource.volume, 0, Time.deltaTime * 2);
+    } 
 }

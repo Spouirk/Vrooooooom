@@ -79,5 +79,6 @@ public class InputManager : MonoBehaviour
         }
         carController.KillOrthogonalVelocity();
         carController.Steer(moveAction.ReadValue<float>(), accelerating);
+        carController.UpdateSFX();
     }
 }
